@@ -48,5 +48,5 @@ int HashFunction(string Input)
 
 void BloomFilter()
 {
-	return 0;
+	return; //terminate the function
 }
