@@ -18,8 +18,39 @@ using std::pair;
 
 //The purpose of this function is to recursively sort
 //a passed in vector of integers using the quick sort method
-void QuickSort(vector<int> Vec)
+void QuickSort(vector<int> &Vec, int StartIndex)
 {
+	//iterative algorithm found at: https://visualgo.net/en/sorting
+
+	if (StartIndex < Vec.size())
+	{
+		int PivotIndex = StartIndex; //set the first element as the pivot
+		int StoreIndex = PivotIndex + 1; //set the Store Index as the next element after the pivot
+		//from the start of the unsorted partition to the end of the vector
+		for (int i = StoreIndex; i < Vec.size(); i++)
+		{
+			//if the unsorted element is less than the pivot
+			if (Vec[i] < Vec[PivotIndex])
+			{
+				//swap i and the store index values
+				int temp = Vec[StoreIndex];
+				Vec[StoreIndex] = Vec[i];
+				Vec[i] = temp;
+
+				//interate the storeindex
+				StoreIndex++;
+			}
+		}
+
+		//swap the pivot and store index - 1
+		int temp = Vec[StoreIndex - 1];
+		Vec[StoreIndex - 1] = Vec[PivotIndex];
+		Vec[PivotIndex] = temp;
+
+		//recall the function
+		QuickSort(Vec, PivotIndex + 1);
+	}
+
 	return; //terminate the function
 }
 
