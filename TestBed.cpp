@@ -10,6 +10,7 @@
 
 //importing functions
 #include<iostream>
+#include"Functions.h"
 
 //from iostream
 using std::cout;
@@ -18,5 +19,5 @@ using std::endl;
 
 int main()
 {
-	return 0; //terminat the function
+	return 0; //terminate the function
 }
