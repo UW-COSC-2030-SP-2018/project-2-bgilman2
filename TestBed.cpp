@@ -23,15 +23,34 @@ void PrintVector(vector<int> Vec, string VecName);
 int main()
 {
 	///////////////// TESTING QUICKSORT /////////////////
-	//vector<int> QuickSortVec = {8,9,6,5,7,8,3,2,1,0,10,4}; //vector for testing quicksort function
-	vector<int> QuickSortVec = { 8,9,6,5,7 };
+	vector<int> QuickSortVec = {8,9,6,5,7,8,3,2,1,0,10,4}; //vector for testing quicksort function
+	//vector<int> QuickSortVec = { 8,9,6,5,7 };
 	//print the unsorted vector
 	PrintVector(QuickSortVec, "Quick Sort Vector (unsorted)");
 	//sort the vector
-	QuickSort(QuickSortVec, 0);
+	QuickSort(QuickSortVec, 0 ,QuickSortVec.size() - 1);
 	//print the sorted vector
 	PrintVector(QuickSortVec, "Quick Sort Vector (sorted)");
 	/////////////////////////////////////////////////////
+
+	///////////////// TESTING BINARY SEARCH /////////////////
+	//print the unsorted vector
+	//using the sorted quick sort vector from previous test:
+	PrintVector(QuickSortVec, "Quick Sort Vector (sorted)");
+	//sort the vector
+	int result = BinarySearch(QuickSortVec, 8, 0, QuickSortVec.size() - 1);
+	cout << "Looking for 8 (-1 if not found): " << result << endl;
+	result = BinarySearch(QuickSortVec, 4, 0, QuickSortVec.size() - 1);
+	cout << "Looking for 4 (-1 if not found): " << result << endl;
+	result = BinarySearch(QuickSortVec, 15, 0, QuickSortVec.size() - 1);
+	cout << "Looking for 15 (-1 if not found): " << result << endl;
+	result = BinarySearch(QuickSortVec, -2, 0, QuickSortVec.size() - 1);
+	cout << "Looking for -2 (-1 if not found): " << result << endl;
+	result = BinarySearch(QuickSortVec, 10, 0, QuickSortVec.size() - 1);
+	cout << "Looking for 10 (-1 if not found): " << result << endl;
+	result = BinarySearch(QuickSortVec, 9, 0, QuickSortVec.size() - 1);
+	cout << "Looking for 9 (-1 if not found): " << result << endl;
+	/////////////////////////////////////////////////////////
 
 	//allow the user to see the data
 	int temp = 0;
