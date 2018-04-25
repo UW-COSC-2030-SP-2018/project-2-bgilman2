@@ -52,6 +52,17 @@ int main()
 	cout << "Looking for 9 (-1 if not found): " << result << endl;
 	/////////////////////////////////////////////////////////
 
+	///////////////// TESTING MERGERSORT /////////////////
+	vector<int> MergeSortVec = { 38,27,43,3,9,82,10 }; //vector for testing mergesort function
+	//print the unsorted vector
+	PrintVector(MergeSortVec, "Merge Sort Vector (unsorted)");
+	//sort the vector
+	MergeSort(MergeSortVec, 0, 6);
+	//print the sorted vector
+	PrintVector(MergeSortVec, "Merge Sort Vector (sorted)");
+	/////////////////////////////////////////////////////
+
+
 	//allow the user to see the data
 	int temp = 0;
 	cin >> temp;
