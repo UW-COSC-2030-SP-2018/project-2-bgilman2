@@ -81,13 +81,13 @@ int BinarySearch(int arr[], int X, int StartIndex, int EndIndex)
 	int MiddleIndex = (StartIndex + EndIndex)/2; //get the middle index
 	//check if X is equal to the middle index
 	if (X == arr[MiddleIndex])
-		return arr[MiddleIndex]; //return that X was found
+		return MiddleIndex; //return that X was found
 	//check if x is equal to the start index
 	else if (X == arr[StartIndex])
-		return arr[StartIndex];
+		return StartIndex;
 	//check if x is equal to the end index
 	else if (X == arr[EndIndex])
-		return arr[EndIndex];
+		return EndIndex;
 	//if there are no more elements left in the list, X was not found
 	else if ((MiddleIndex == StartIndex) || (MiddleIndex == EndIndex))
 		return -1; //return that the element was not found
@@ -139,14 +139,41 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 		LIter = 0,
 		RIter = 0;
 
+	int LVal; //value from the left array to be looked at
+	int RVal; //value from the right array to be looked at
+
 	//while none of the iterators have reached the end of their array
 	while ((LIter != -1) && (RIter != -1))
 	{
-		int LVal = Left[LIter]; //get the Left value being looked at
-		int RVal = Right[RIter]; //get the right value being looked at
-		
+		//if the right array is finished, set RVal to 0, otherwise get a value from the right array
+		if (RIter == -1) { RVal = 0; }
+		else { RVal = Right[RIter]; } 
+
+		//if the left array is finished, set LVal to 0, otherwise get a value from the right array
+		if (LIter == -1) { LVal = 0; }
+		else { LVal = Left[LIter]; }
+
+		if ((LVal == 10) || (RVal == 10))
+			std::cout << "ERROR!";
+
+		//if the left array is empty
+		if (LIter == -1)
+		{
+			//save the right value to the unsorted array 
+			arr[AIter] = RVal;
+			//iterate the right array iterator
+			RIter++;
+		}
+		//if the right array is empty
+		else if (RIter == -1)
+		{
+			//save the right value to the unsorted array 
+			arr[AIter] = LVal;
+			//iterate the left array iterator
+			LIter++;
+		}
 		//if the left value is greater than the right value
-		if ((LVal >= RVal) || LIter == -1)
+		else if (LVal >= RVal)
 		{
 			//save the right value to the unsorted array 
 			arr[AIter] = RVal;
@@ -154,7 +181,7 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 			RIter++;
 		}
 		//if the left value is greater than the right value
-		else if ((LVal <= RVal) || (RIter == -1))
+		else if (LVal <= RVal)
 		{
 			//save the right value to the unsorted array 
 			arr[AIter] = LVal;
@@ -166,11 +193,16 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 		AIter++;
 
 		//if either of iterators have exceeded the bounds of their array, set them to NULL
-		if (LIter > LeftSize - 1)
+		if (LIter == LeftSize)
 			LIter = -1;
-		if (RIter > RightSize - 1)
+		if (RIter == RightSize)
 			RIter = -1;
 	}
+
+	int NewArr[7];
+
+	for (int i = 0; i < (LeftSize + RightSize); i++)
+		NewArr[i] = arr[i];
 
 	return; //terminate the function
 	
