@@ -21,59 +21,40 @@ using std::endl;
 //from algorithm
 using std::sort;
 
-//function for printing vectors
-void PrintVector(vector<int> Vec, string VecName);
+//function for printing arrays
+void PrintArray(int arr[], string ArrayName, int ArraySize);
 //function for testing if the custom sort function was successful
-void CheckSort(vector<int> VecSTL, vector<int> VecCustom);
+void CheckSort(int arrCustom[], int arrCustomSize);
+//function for testing if the binary search function was successful
+void CheckSearch(int arr[], int arrSize);
 
 int main()
 {
 	///////////////// TESTING QUICKSORT /////////////////
-	vector<int> QuickSortVec = {8,9,6,5,7,8,3,2,1,0,10,4}; //vector for testing quicksort function
-	/* Manual Checking:
-	//print the unsorted vector
-	PrintVector(QuickSortVec, "Quick Sort Vector (unsorted)");
-	//sort the vector
-	QuickSort(QuickSortVec, 0 ,QuickSortVec.size() - 1);
-	//print the sorted vector
-	PrintVector(QuickSortVec, "Quick Sort Vector (sorted)");
-	*/
-
+	int QuickSortArr[] = { 8,9,6,5,7,8,3,2,1,0,10,4 }; //array for testing quicksort function
+	int QuickSortSize = 12;
 	/*Auto Checking:*/
 	cout << "Testing QuickSort Function: ";
-	vector<int> QuickSTLVec = { 8,9,6,5,7,8,3,2,1,0,10,4 }; //vector for testing quicksort function
-	QuickSort(QuickSortVec, 0, QuickSortVec.size() - 1); //sort the vector
-	CheckSort(QuickSTLVec, QuickSortVec); //check if the STL sorted vector and the custom sort vector are the same
+	QuickSort(QuickSortArr, 0, QuickSortSize - 1); //sor the array using the custom quick sort
+	CheckSort(QuickSortArr, QuickSortSize); //check if the STL sorted array and the custom sort array are the same
 
 	/////////////////////////////////////////////////////
 
 	///////////////// TESTING BINARY SEARCH /////////////////
-	//print the unsorted vector
-	//using the sorted quick sort vector from previous test:
-	PrintVector(QuickSortVec, "Quick Sort Vector (sorted)");
-	//sort the vector
-	int result = BinarySearch(QuickSortVec, 8, 0, QuickSortVec.size() - 1);
-	cout << "Looking for 8 (-1 if not found): " << result << endl;
-	result = BinarySearch(QuickSortVec, 4, 0, QuickSortVec.size() - 1);
-	cout << "Looking for 4 (-1 if not found): " << result << endl;
-	result = BinarySearch(QuickSortVec, 15, 0, QuickSortVec.size() - 1);
-	cout << "Looking for 15 (-1 if not found): " << result << endl;
-	result = BinarySearch(QuickSortVec, -2, 0, QuickSortVec.size() - 1);
-	cout << "Looking for -2 (-1 if not found): " << result << endl;
-	result = BinarySearch(QuickSortVec, 10, 0, QuickSortVec.size() - 1);
-	cout << "Looking for 10 (-1 if not found): " << result << endl;
-	result = BinarySearch(QuickSortVec, 9, 0, QuickSortVec.size() - 1);
-	cout << "Looking for 9 (-1 if not found): " << result << endl;
+	//using the sorted quick sort array from previous test:
+	cout << "Testing Binary Search Function: ";
+	CheckSearch(QuickSortArr, QuickSortSize);
 	/////////////////////////////////////////////////////////
 
 	///////////////// TESTING MERGERSORT /////////////////
-	vector<int> MergeSortVec = { 38,27,43,3,9,82,10 }; //vector for testing mergesort function
-	//print the unsorted vector
-	PrintVector(MergeSortVec, "Merge Sort Vector (unsorted)");
-	//sort the vector
-	MergeSort(MergeSortVec, 0, 6);
-	//print the sorted vector
-	PrintVector(MergeSortVec, "Merge Sort Vector (sorted)");
+	int MergeSortArr[] = { 38,27,43,3,9,82,10 }; //array for testing mergesort function
+	int MergeSortSize = 7;
+	//print the unsorted array
+	PrintArray(MergeSortArr, "Merge Sort array (unsorted)", MergeSortSize);
+	//sort the array
+	MergeSort(MergeSortArr, MergeSortSize);
+	//print the sorted array
+	PrintArray(MergeSortArr, "Merge Sort array (sorted)", MergeSortSize);
 	/////////////////////////////////////////////////////
 
 
@@ -84,43 +65,78 @@ int main()
 	return 0; //terminate the function
 }
 
-void PrintVector(vector<int> Vec, string VecName)
+void PrintArray(int arr[], string ArrayName, int ArraySize)
 {
 	//print header with the passed in name
 	cout << "------------------------------" << endl;
-	cout << "Printing Out Vector: " << VecName << endl;
+	cout << "Printing Out array: " << ArrayName << endl;
 	//print all the elements
-	for (int i = 0; i < Vec.size(); i++)
-		cout << Vec[i] << endl;
+	for (int i = 0; i < ArraySize; i++)
+		cout << arr[i] << endl;
 	cout << "------------------------------" << endl;
 }
 
-//The purpose of this function is to test if two vectors are the same. The VecSTL is sorted before the comparison
+//The purpose of this function is to test if two arrays are the same. The VecSTL is sorted before the comparison
 //happens and VecCustom is assumed to already be sorted
-void CheckSort(vector<int> VecSTL, vector<int> VecCustom)
+void CheckSort(int arrCustom[], int arrCustomSize)
 {
+	int *STLSort = new int[arrCustomSize]; //array to test the quick sort against
+	//copy the contents of the passed in array to the new array
+	for (int i = 0; i < arrCustomSize; i++)
+		STLSort[i] = arrCustom[i];
+
 	//assuming VecCustom is already sorted
 	//sort VecSTL using the STL sort
-	sort(VecSTL.begin(), VecSTL.end());
-	//if the vectors are the same size
-	if (VecSTL.size() == VecCustom.size())
+	sort(STLSort, STLSort + arrCustomSize);
+	//if the arrays are the same size
+
+		//iterate throught the arrays and check if they are equal to each other
+	for (int i = 0; i < arrCustomSize - 1; i++)
 	{
-		//iterate throught the vectors and check if they are equal to each other
-		for (int i = 0; i < VecSTL.size() - 1; i++)
+		//if one element is not the same
+		if (STLSort[i] != arrCustom[i])
 		{
-			//if one element is not the same
-			if (VecSTL[i] != VecCustom[i])
+			cout << "Failed" << endl;
+			return; //return that they are not the same
+		}
+	}
+	cout << "Passed" << endl;
+	return; //if program gets here, the two arrays were the same
+}
+
+//Function for checking if the binary Search function is working
+void CheckSearch(int arr[], int arrSize)
+{
+	int FuncResult = 0; //variable that will hold the result of the binary Serach function
+	int ForIndex = -1; //variable for saving if the index was found in the for loop
+	int Size = 5;
+	int *Numbers = new int[Size] { 8, 4, 15, -2, 10 }; //numbers to search for
+
+	//for each of the numbers that need to be searched for
+	for (int i = 0; i < Size; i++)
+	{
+		int X = Numbers[i]; //number that is being searched for
+		FuncResult = BinarySearch(arr, X, 0, arrSize - 1);
+		ForIndex = -1; //reset the search index
+
+		//search for the number in the array using a for loop
+		for (int j = 0; j < arrSize; j++)
+		{
+			//if the number is found
+			if (X == arr[j])
 			{
-				cout << "Failed" << endl;
-				return; //return that they are not the same
+				ForIndex = j; //save the index
+				break; //end the search;
 			}
 		}
-		cout << "Passed" << endl;
-		return; //if program gets here, the two vectors were the same
+		//if the two indexes are not the same
+		if (ForIndex != FuncResult)
+		{
+			//notify the user that it failed
+			cout << "Failed" << endl;
+			return; //end the function
+		}
 	}
-	else
-	{
-		cout << "Failed" << endl;
-		return; //vectors are not the same size so they are not equal
-	}
+	cout << "Passed" << endl; //notify the user that it passed
+	return; //terminate the function
 }

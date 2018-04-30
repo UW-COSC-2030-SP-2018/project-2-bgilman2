@@ -2,32 +2,28 @@
 // 4/22/2018
 // Functions.h
 
-#include<vector>
 #include<string>
 #include<map>
 
 //from string
 using std::string;
 
-//from vector
-using std::vector;
-
 //from map
 using std::map;
 using std::pair;
 
 //function declarations
-void QuickSort(vector<int> &Vec, int StartIndex, int EndIndex);
-int Partition(vector<int> &Vec, int StartIndex, int EndIndex);
-int BinarySearch(vector<int> Vec, int X, int StartIndex, int EndIndex);
-void MergeSort(vector<int> &Vec, int Left, int Right);
-vector<int> Merge(vector<int> Vec, int Left, int Middle, int Right);
+void QuickSort(int arr[], int StartIndex, int EndIndex);
+int Partition(int arr[], int StartIndex, int EndIndex);
+int BinarySearch(int arr[], int X, int StartIndex, int EndIndex);
+void MergeSort(int arr[], int size);
+void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize);
 int HashFunction(string Input);
 void BloomFilter();
 
 //The purpose of this function is to recursively sort
 //a passed in vector of integers using the quick sort method
-void QuickSort(vector<int> &Vec, int StartIndex, int EndIndex)
+void QuickSort(int arr[], int StartIndex, int EndIndex)
 {
 	//quick sort algorithm found at: https://www.geeksforgeeks.org/quick-sort/
 	//only the pseudo code for the quick sort function was used, not the partition
@@ -37,17 +33,17 @@ void QuickSort(vector<int> &Vec, int StartIndex, int EndIndex)
 	if (StartIndex < EndIndex)
 	{
 		//calculate the new partition index
-		int PartitionIndex = Partition(Vec, StartIndex, EndIndex);
+		int PartitionIndex = Partition(arr, StartIndex, EndIndex);
 
 		//sort again using a different partition
-		QuickSort(Vec, StartIndex, PartitionIndex - 1);
-		QuickSort(Vec, PartitionIndex + 1, EndIndex);
+		QuickSort(arr, StartIndex, PartitionIndex - 1);
+		QuickSort(arr, PartitionIndex + 1, EndIndex);
 	}
 
 	return; //terminate the function
 }
 
-int Partition(vector<int> &Vec, int StartIndex, int EndIndex)
+int Partition(int arr[], int StartIndex, int EndIndex)
 {
 	//Algorithm for partition function found at: https://visualgo.net/en/sorting
 
@@ -57,12 +53,12 @@ int Partition(vector<int> &Vec, int StartIndex, int EndIndex)
 	for (int i = StoreIndex; i <= EndIndex; i++)
 	{
 		//if the unsorted element is less than the pivot
-		if (Vec[i] < Vec[PivotIndex])
+		if (arr[i] < arr[PivotIndex])
 		{
 			//swap i and the store index values
-			int temp = Vec[StoreIndex];
-			Vec[StoreIndex] = Vec[i];
-			Vec[i] = temp;
+			int temp = arr[StoreIndex];
+			arr[StoreIndex] = arr[i];
+			arr[i] = temp;
 
 			//interate the storeindex
 			StoreIndex++;
@@ -70,9 +66,9 @@ int Partition(vector<int> &Vec, int StartIndex, int EndIndex)
 	}
 
 	//swap the pivot and store index - 1
-	int temp = Vec[StoreIndex - 1];
-	Vec[StoreIndex - 1] = Vec[PivotIndex];
-	Vec[PivotIndex] = temp;
+	int temp = arr[StoreIndex - 1];
+	arr[StoreIndex - 1] = arr[PivotIndex];
+	arr[PivotIndex] = temp;
 
 	//return the new partition index
 	return (StoreIndex - 1);
@@ -80,99 +76,104 @@ int Partition(vector<int> &Vec, int StartIndex, int EndIndex)
 
 //The purpose of this function is to recursively find an integer
 //that is passed in to the function using the Binary Search Method
-int BinarySearch(vector<int> Vec, int X, int StartIndex, int EndIndex)
+int BinarySearch(int arr[], int X, int StartIndex, int EndIndex)
 {
 	int MiddleIndex = (StartIndex + EndIndex)/2; //get the middle index
 	//check if X is equal to the middle index
-	if (X == Vec[MiddleIndex])
-		return Vec[MiddleIndex]; //return that X was found
+	if (X == arr[MiddleIndex])
+		return arr[MiddleIndex]; //return that X was found
 	//check if x is equal to the start index
-	else if (X == Vec[StartIndex])
-		return Vec[StartIndex];
+	else if (X == arr[StartIndex])
+		return arr[StartIndex];
 	//check if x is equal to the end index
-	else if (X == Vec[EndIndex])
-		return Vec[EndIndex];
+	else if (X == arr[EndIndex])
+		return arr[EndIndex];
 	//if there are no more elements left in the list, X was not found
 	else if ((MiddleIndex == StartIndex) || (MiddleIndex == EndIndex))
 		return -1; //return that the element was not found
 	//check if X is less than the middle index
-	else if (X < Vec[MiddleIndex])
-		return BinarySearch(Vec, X, StartIndex, MiddleIndex); //check the left half of the vector
+	else if (X < arr[MiddleIndex])
+		return BinarySearch(arr, X, StartIndex, MiddleIndex); //check the left half of the vector
 	//check if X is greater than the middle index
-	else if (X > Vec[MiddleIndex])
-		return BinarySearch(Vec, X, MiddleIndex, EndIndex); //check the right half of the vector
+	else if (X > arr[MiddleIndex])
+		return BinarySearch(arr, X, MiddleIndex, EndIndex); //check the right half of the vector
 }
 
 //The purpose of this function is to recursively sort
-//a passed in vector of integers using the merge sort method
-void MergeSort(vector<int> &Vec, int Left, int Right)
+//a passed in array of integers using the merge sort method
+void MergeSort(int arr[], int size)
 {
-	//Algorithm given in class:
-	//if r > 1
-	//1. Find the middle point to divide the array into two halves:
-	//		Middle m = (1+r)/2
-	//2. call mergeSort for first half:
-	//		call mergesort(vec, l, m)
-	//3. Call mergeSort for second half:
-	//		call mergeSort(Vec, m+ 1, r)
-	//4. Merge the two halves sorted in step 2 and 3
+	int n = size; //get the length of the array
+	//if there is only one element left, exit the function
+	if (n < 2)
+		return;
+	int Middle = n / 2; //get the middle index of the array
+	int LeftSize = Middle;
+	int RightSize = n - Middle;
+	int *Left = new int[LeftSize]; //create a left array of size Middle
+	int *Right = new int[RightSize]; //create a right array of size n - middle
 
-	/*
-	//if there are more than 1 elements in the vector, keep dividing
-	if (Right > 1)
-	{
-		int Middle = (1 + Right) / 2;
-		//call mergeSort for the first half:
-		MergeSort(Vec, Left, Middle);
-		//call mergeSort for the second half:
-		MergeSort(Vec, Middle + 1, Right);
-		//Merge the two halves:
-		Vec = Merge(Vec, Left, Middle, Right);
-	}
+	//fill the left array with the left side of the array
+	for (int i = 0; i <= Middle - 1; i++)
+		Left[i] = arr[i];
+
+	//fill the right array with the rioght side of the array
+	for (int i = Middle; i <= n - 1; i++)
+		Right[i - Middle] = arr[i];
+	
+	//split the left side of the array
+	MergeSort(Left, Middle);
+	//split the right side of the array
+	MergeSort(Right, n- Middle);
+	//merge the left and right side arrays together
+	Merge(arr, Left, LeftSize, Right, RightSize);
+
 	return; //terminate the function
-	*/
 }
 
-//The purpose of this function is to sort the elements in a passed in vector and return the results
-vector<int> Merge(vector<int> Vec, int Left, int Middle, int Right)
+//The purpose of this function is to sort the elements in a passed in array
+void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 {
-	vector<int> Sorted; //vector for holding the sorted elements
-	int LeftIter = Left; //iterator for the left side of the vector
-	int RightIter = Middle; //iterator for the right side of the vector
-	//While the two iterators are not at NULL (end of the list), keep sorting
-	while ((LeftIter != NULL) && (RightIter != NULL))
+	//iterator for navigating the unsorted array, left array, and right array, respectively
+	int AIter = 0, 
+		LIter = 0,
+		RIter = 0;
+
+	//while none of the iterators have reached the end of their array
+	while ((LIter != -1) && (RIter != -1))
 	{
-		//if the right side is at the end of the list
-		if (RightIter == NULL)
+		int LVal = Left[LIter]; //get the Left value being looked at
+		int RVal = Right[RIter]; //get the right value being looked at
+		
+		//if the left value is greater than the right value
+		if ((LVal >= RVal) || LIter == -1)
 		{
-			Sorted.push_back(Vec[LeftIter]); //the left is larger than NULL
-			LeftIter++; //increment the left iterator
+			//save the right value to the unsorted array 
+			arr[AIter] = RVal;
+			//iterate the right array iterator
+			RIter++;
 		}
-		//if the left side is at the end of the list
-		else if (LeftIter == NULL)
+		//if the left value is greater than the right value
+		else if ((LVal <= RVal) || (RIter == -1))
 		{
-			Sorted.push_back(Vec[RightIter]); //the right is larger than NULL
-			RightIter++; //increment the right iterator
+			//save the right value to the unsorted array 
+			arr[AIter] = LVal;
+			//iterate the left array iterator
+			LIter++;
 		}
-		//if the left side element is greater than or equal to the right side element
-		else if (Vec[LeftIter] >= Vec[RightIter])
-		{
-			Sorted.push_back(Vec[RightIter]); //the right element is smaller
-			RightIter++; //increment the interator
-		}
-		//if the right side element is greater than the left side element
-		else if (Vec[LeftIter] < Vec[RightIter])
-		{
-			Sorted.push_back(Vec[LeftIter]); //the left element is smaller
-			LeftIter++; //increment the iterator
-		}
-		//if the iterator is larger than the sentinel index, set it to null
-		if (RightIter > Right)
-			RightIter = NULL;
-		if (LeftIter > Right)
-			LeftIter = NULL;
+
+		//iterate the unsorted array iterator
+		AIter++;
+
+		//if either of iterators have exceeded the bounds of their array, set them to NULL
+		if (LIter > LeftSize - 1)
+			LIter = -1;
+		if (RIter > RightSize - 1)
+			RIter = -1;
 	}
-	return Sorted; //return the sorted vector
+
+	return; //terminate the function
+	
 }
 
 //The purpose of this function is to use a custom hashing function to convert
