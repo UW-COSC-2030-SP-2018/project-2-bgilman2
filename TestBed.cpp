@@ -157,7 +157,7 @@ void FillArray(int arr[], int arrSize)
 	return; //terminate the function
 }
 
-//type "Merge" for merge sort, "Quick" for quick sort, "Binary" for binary search
+//type "Merge" for merge sort, "Quick" for quick sort, and test times is how many arrays should be sorted
 void RigerousSortTest(string TestType, int TestTimes)
 {
 	srand(time(NULL)); //seed the random number generator
