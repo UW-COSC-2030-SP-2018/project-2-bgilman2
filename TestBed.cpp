@@ -12,8 +12,7 @@
 #include<iostream>
 #include"Functions.h"
 #include<algorithm> //STL sort to check sort functions
-#include<stdlib.h> //for getting random numbers
-#include<time.h> //for seeding the random number generator
+#include"RandomUtilities.h" //for generating random numbers
 
 //from iostream
 using std::cout;
@@ -49,7 +48,7 @@ int main()
 	QuickSort(QuickSortArr, 0, QuickSortSize - 1); //sort the array using the custom quick sort
 
 	//Full rigerous test
-	RigerousSortTest("Quick", 10);
+	RigerousSortTest("Quick", 100);
 	/////////////////////////////////////////////////////
 
 	///////////////// TESTING BINARY SEARCH /////////////////
@@ -58,7 +57,7 @@ int main()
 	/////////////////////////////////////////////////////////
 
 	///////////////// TESTING MERGERSORT /////////////////
-	RigerousSortTest("Merge", 15);
+	RigerousSortTest("Merge", 100);
 	/////////////////////////////////////////////////////
 
 	//allow the user to see the data
@@ -112,9 +111,15 @@ void CheckSearch(int arr[], int arrSize)
 {
 	int FuncResult = 0; //variable that will hold the result of the binary Serach function
 	int ForIndex = -1; //variable for saving if the index was found in the for loop
+	srand(time(NULL)); //seed the random number generator
 	int Size = rand() % 80 + 1; //get the size of the array (from 1 to 80);
 	int *Numbers = new int[Size]; //numbers to search for
 	FillArray(Numbers, Size); //fill the array with random numbers
+
+	int Arr2[80];
+	for (int i = 0; i < arrSize; i++)
+		Arr2[i] = arr[i];
+
 
 	//for each of the numbers that need to be searched for
 	for (int i = 0; i < Size; i++)
@@ -152,10 +157,7 @@ void FillArray(int arr[], int arrSize)
 {
 	//fill the array with random numbers
 	for (int i = 0; i < arrSize; i++)
-	{
-		srand(time(NULL)); //seed the random number generator
-		arr[i] = rand() % 100; //get a random number from 0 to 99 and save it to the array
-	}
+		arr[i] = randInt(0, 100); //get a random number from 0 to 100 and save it to the array
 
 	return; //terminate the function
 }

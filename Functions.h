@@ -3,14 +3,9 @@
 // Functions.h
 
 #include<string>
-#include<map>
 
 //from string
 using std::string;
-
-//from map
-using std::map;
-using std::pair;
 
 //function declarations
 void QuickSort(int arr[], int StartIndex, int EndIndex);
@@ -27,7 +22,7 @@ void QuickSort(int arr[], int StartIndex, int EndIndex)
 {
 	//quick sort algorithm found at: https://www.geeksforgeeks.org/quick-sort/
 	//only the pseudo code for the quick sort function was used, not the partition
-	//algorithm and no code was coppied.
+	//algorithm and no code was copied.
 
 	//if the partition is not zero
 	if (StartIndex < EndIndex)
@@ -103,6 +98,10 @@ int BinarySearch(int arr[], int X, int StartIndex, int EndIndex)
 //a passed in array of integers using the merge sort method
 void MergeSort(int arr[], int size)
 {
+
+	// MergeSort algorithm found at: https://www.youtube.com/watch?v=TzeBrDU-JaY&t=818s
+	//no code was copied and only the algorithm for Merge Sort was used, not the function Merge (Merge function is original)
+
 	int n = size; //get the length of the array
 	//if there is only one element left, exit the function
 	if (n < 2)
