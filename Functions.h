@@ -74,12 +74,12 @@ int Partition(int arr[], int StartIndex, int EndIndex)
 int BinarySearch(int arr[], int X, int StartIndex, int EndIndex)
 {
 	int MiddleIndex = (StartIndex + EndIndex)/2; //get the middle index
-	//check if X is equal to the middle index
-	if (X == arr[MiddleIndex])
-		return MiddleIndex; //return that X was found
 	//check if x is equal to the start index
-	else if (X == arr[StartIndex])
+	if (X == arr[StartIndex])
 		return StartIndex;
+	//check if X is equal to the middle index
+	else if (X == arr[MiddleIndex])
+		return MiddleIndex; //return that X was found
 	//check if x is equal to the end index
 	else if (X == arr[EndIndex])
 		return EndIndex;
