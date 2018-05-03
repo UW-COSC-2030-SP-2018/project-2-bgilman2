@@ -114,12 +114,7 @@ void CheckSearch(int arr[], int arrSize)
 	srand(time(NULL)); //seed the random number generator
 	int Size = rand() % 80 + 1; //get the size of the array (from 1 to 80);
 	int *Numbers = new int[Size]; //numbers to search for
-	FillArray(Numbers, Size); //fill the array with random numbers
-
-	int Arr2[80];
-	for (int i = 0; i < arrSize; i++)
-		Arr2[i] = arr[i];
-
+	FillArray(Numbers, Size); //fill the array with random number
 
 	//for each of the numbers that need to be searched for
 	for (int i = 0; i < Size; i++)
