@@ -139,25 +139,22 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 		LIter = 0,
 		RIter = 0;
 
-	int LVal; //value from the left array to be looked at
-	int RVal; //value from the right array to be looked at
+	int LVal = 0; //value from the left array to be looked at
+	int RVal = 0; //value from the right array to be looked at
 
 	//while none of the iterators have reached the end of their array
-	while ((LIter != -1) && (RIter != -1))
+	while ((LIter < LeftSize) || (RIter < RightSize))
 	{
-		//if the right array is finished, set RVal to 0, otherwise get a value from the right array
-		if (RIter == -1) { RVal = 0; }
-		else { RVal = Right[RIter]; } 
+		//if the left iterator hasn't made it to the end of the array yet
+		if (LIter < LeftSize)
+			LVal = Left[LIter]; //get the next value from the array
 
-		//if the left array is finished, set LVal to 0, otherwise get a value from the right array
-		if (LIter == -1) { LVal = 0; }
-		else { LVal = Left[LIter]; }
-
-		if ((LVal == 10) || (RVal == 10))
-			std::cout << "ERROR!";
+		//if the right iterator hasn't made it to the end of the array yet
+		if (RIter < RightSize)
+			RVal = Right[RIter]; //get the next value from the array
 
 		//if the left array is empty
-		if (LIter == -1)
+		if (LIter >= LeftSize)
 		{
 			//save the right value to the unsorted array 
 			arr[AIter] = RVal;
@@ -165,7 +162,7 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 			RIter++;
 		}
 		//if the right array is empty
-		else if (RIter == -1)
+		else if (RIter >= RightSize)
 		{
 			//save the right value to the unsorted array 
 			arr[AIter] = LVal;
@@ -191,21 +188,8 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 
 		//iterate the unsorted array iterator
 		AIter++;
-
-		//if either of iterators have exceeded the bounds of their array, set them to NULL
-		if (LIter == LeftSize)
-			LIter = -1;
-		if (RIter == RightSize)
-			RIter = -1;
 	}
-
-	int NewArr[7];
-
-	for (int i = 0; i < (LeftSize + RightSize); i++)
-		NewArr[i] = arr[i];
-
 	return; //terminate the function
-	
 }
 
 //The purpose of this function is to use a custom hashing function to convert

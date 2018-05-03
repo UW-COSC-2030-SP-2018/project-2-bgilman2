@@ -11,7 +11,9 @@
 //importing functions
 #include<iostream>
 #include"Functions.h"
-#include<algorithm>
+#include<algorithm> //STL sort to check sort functions
+#include<stdlib.h> //for getting random numbers
+#include<time.h> //for seeding the random number generator
 
 //from iostream
 using std::cout;
@@ -21,42 +23,43 @@ using std::endl;
 //from algorithm
 using std::sort;
 
+//from STDLib.H
+using std::rand;
+using std::srand;
+
 //function for printing arrays
 void PrintArray(int arr[], string ArrayName, int ArraySize);
 //function for testing if the custom sort function was successful
-void CheckSort(int arrCustom[], int arrCustomSize);
+bool CheckSort(int arrCustom[], int arrCustomSize);
 //function for testing if the binary search function was successful
 void CheckSearch(int arr[], int arrSize);
+//function for filling arrays with random numbers
+void FillArray(int arr[], int arrSize);
+//function for rigerously testing sorts 
+void RigerousSortTest(string TestType, int TestTimes);
 
 int main()
 {
 	///////////////// TESTING QUICKSORT /////////////////
-	int QuickSortArr[] = { 8,9,6,5,7,8,3,2,1,0,10,4 }; //array for testing quicksort function
-	int QuickSortSize = 12;
-	/*Auto Checking:*/
-	cout << "Testing QuickSort Function: ";
-	QuickSort(QuickSortArr, 0, QuickSortSize - 1); //sor the array using the custom quick sort
-	CheckSort(QuickSortArr, QuickSortSize); //check if the STL sorted array and the custom sort array are the same
 
+	int QuickSortArr[12]; //array for testing quicksort function
+	int QuickSortSize = 12; //size of the array
+	//Fill the array with random numbers
+	FillArray(QuickSortArr, QuickSortSize);
+	QuickSort(QuickSortArr, 0, QuickSortSize - 1); //sort the array using the custom quick sort
+
+	//Full rigerous test
+	RigerousSortTest("Quick", 10);
 	/////////////////////////////////////////////////////
 
 	///////////////// TESTING BINARY SEARCH /////////////////
 	//using the sorted quick sort array from previous test:
-	cout << "Testing Binary Search Function: ";
 	CheckSearch(QuickSortArr, QuickSortSize);
 	/////////////////////////////////////////////////////////
 
 	///////////////// TESTING MERGERSORT /////////////////
-	int MergeSortArr[] = { 38,27,43,3,9,82,10 }; //array for testing mergesort function
-	int MergeSortSize = 7;
-	//print the unsorted array
-	PrintArray(MergeSortArr, "Merge Sort array (unsorted)", MergeSortSize);
-	//sort the array
-	MergeSort(MergeSortArr, MergeSortSize);
-	//print the sorted array
-	PrintArray(MergeSortArr, "Merge Sort array (sorted)", MergeSortSize);
+	RigerousSortTest("Merge", 15);
 	/////////////////////////////////////////////////////
-
 
 	//allow the user to see the data
 	int temp = 0;
@@ -78,7 +81,7 @@ void PrintArray(int arr[], string ArrayName, int ArraySize)
 
 //The purpose of this function is to test if two arrays are the same. The VecSTL is sorted before the comparison
 //happens and VecCustom is assumed to already be sorted
-void CheckSort(int arrCustom[], int arrCustomSize)
+bool CheckSort(int arrCustom[], int arrCustomSize)
 {
 	int *STLSort = new int[arrCustomSize]; //array to test the quick sort against
 	//copy the contents of the passed in array to the new array
@@ -96,12 +99,12 @@ void CheckSort(int arrCustom[], int arrCustomSize)
 		//if one element is not the same
 		if (STLSort[i] != arrCustom[i])
 		{
-			cout << "Failed" << endl;
-			return; //return that they are not the same
+			//cout << "Failed" << endl;
+			return 0; //return that they are not the same
 		}
 	}
-	cout << "Passed" << endl;
-	return; //if program gets here, the two arrays were the same
+	//cout << "Passed" << endl;
+	return 1; //if program gets here, the two arrays were the same
 }
 
 //Function for checking if the binary Search function is working
@@ -109,8 +112,9 @@ void CheckSearch(int arr[], int arrSize)
 {
 	int FuncResult = 0; //variable that will hold the result of the binary Serach function
 	int ForIndex = -1; //variable for saving if the index was found in the for loop
-	int Size = 5;
-	int *Numbers = new int[Size] { 8, 4, 15, -2, 10 }; //numbers to search for
+	int Size = rand() % 80 + 1; //get the size of the array (from 1 to 80);
+	int *Numbers = new int[Size]; //numbers to search for
+	FillArray(Numbers, Size); //fill the array with random numbers
 
 	//for each of the numbers that need to be searched for
 	for (int i = 0; i < Size; i++)
@@ -132,11 +136,67 @@ void CheckSearch(int arr[], int arrSize)
 		//if the two indexes are not the same
 		if (ForIndex != FuncResult)
 		{
+			delete[] Numbers; //delete the array that was used
 			//notify the user that it failed
-			cout << "Failed" << endl;
+			cout << "Binary Search Failed" << endl;
 			return; //end the function
 		}
 	}
-	cout << "Passed" << endl; //notify the user that it passed
+	delete[] Numbers; //delete the array that was used
+	cout << "Binary Search Passed" << endl; //notify the user that it passed
+	return; //terminate the function
+}
+
+//the purpose of this function is to fill the passed in array with random numbers
+void FillArray(int arr[], int arrSize)
+{
+	//fill the array with random numbers
+	for (int i = 0; i < arrSize; i++)
+	{
+		srand(time(NULL)); //seed the random number generator
+		arr[i] = rand() % 100; //get a random number from 0 to 99 and save it to the array
+	}
+
+	return; //terminate the function
+}
+
+//type "Merge" for merge sort, "Quick" for quick sort, "Binary" for binary search
+void RigerousSortTest(string TestType, int TestTimes)
+{
+	srand(time(NULL)); //seed the random number generator
+	int ArrSize = rand() % 80 + 1; //get the size of the array (from 1 to 80)
+	int *Arr = new int[ArrSize]; //create the array with the generated size
+
+	//test the sort functions
+	for (int i = 0; i < TestTimes; i++)
+	{
+		FillArray(Arr, ArrSize); //fill the array with random numbers
+		bool Results = 0; //variable for storing the results
+
+		//if the user wants a merge sort, use the merge sort
+		if (TestType == "Merge")
+			MergeSort(Arr, ArrSize); //sort the array
+		//if the user wants a quick sort, use the quick sort
+		else if (TestType == "Quick")
+			QuickSort(Arr, 0, ArrSize - 1); //Sort the array
+		else
+		{
+			cout << "Error, Sort not found" << endl;
+			return; //terminate the function
+		}
+
+		Results = CheckSort(Arr, ArrSize); //check the sort
+		//if the sort failed, terminate the function early and notify user
+		if (Results == false)
+		{
+			delete[] Arr; //delete the array that was used
+			//notify the user that the test failed
+			cout << TestType << " Failed Rigerous Test" << endl;
+			return; //terminate the function
+		}
+	}
+	delete[] Arr; //delete the array that was used
+	//notify the user that the test passed
+	cout << TestType << " Passed Rigerous Test" << endl;
 	return; //terminate the function
 }
