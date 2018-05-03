@@ -48,7 +48,7 @@ int main()
 	QuickSort(QuickSortArr, 0, QuickSortSize - 1); //sort the array using the custom quick sort
 
 	//Full rigerous test
-	RigerousSortTest("Quick", 100);
+	RigerousSortTest("Quick", 1000);
 	/////////////////////////////////////////////////////
 
 	///////////////// TESTING BINARY SEARCH /////////////////
@@ -57,7 +57,7 @@ int main()
 	/////////////////////////////////////////////////////////
 
 	///////////////// TESTING MERGERSORT /////////////////
-	RigerousSortTest("Merge", 100);
+	RigerousSortTest("Merge", 1000);
 	/////////////////////////////////////////////////////
 
 	//allow the user to see the data
@@ -102,6 +102,8 @@ bool CheckSort(int arrCustom[], int arrCustomSize)
 			return 0; //return that they are not the same
 		}
 	}
+
+	delete[] STLSort; //delete the array
 	//cout << "Passed" << endl;
 	return 1; //if program gets here, the two arrays were the same
 }

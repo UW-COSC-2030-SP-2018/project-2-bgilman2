@@ -127,6 +127,10 @@ void MergeSort(int arr[], int size)
 	//merge the left and right side arrays together
 	Merge(arr, Left, LeftSize, Right, RightSize);
 
+	//delete the two arrays to free up memory
+	delete[] Left;
+	delete[] Right;
+
 	return; //terminate the function
 }
 
