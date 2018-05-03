@@ -188,12 +188,12 @@ void RigerousSortTest(string TestType, int TestTimes)
 		{
 			delete[] Arr; //delete the array that was used
 			//notify the user that the test failed
-			cout << TestType << " Failed Rigerous Test" << endl;
+			cout << TestType << " Sort Failed Rigerous Test" << endl;
 			return; //terminate the function
 		}
 	}
 	delete[] Arr; //delete the array that was used
 	//notify the user that the test passed
-	cout << TestType << " Passed Rigerous Test" << endl;
+	cout << TestType << " Sort Passed Rigerous Test" << endl;
 	return; //terminate the function
 }
