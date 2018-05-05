@@ -7,6 +7,28 @@
 //from string
 using std::string;
 
+// defining a bloom filter structure and using the hash function
+// type define from Lab 10
+typedef unsigned int(*hash_function)(const void *data);
+typedef struct bloomFilter * bloom;
+
+// Structure of functions to be used by Bloom Filters. Contains a hash function
+// and a pointer to the next hash function. Is a linked list!
+struct bloomFilterFunction 
+{
+	hash_function hashFunction;
+	struct bloomFilterFunction *next;
+};
+
+// Structure of the Bloom Filter itself. Contains the list of hash functions from the
+// previous struct, a set of bits, and a set size.
+struct bloomFilter 
+{
+	struct bloomFilterFunction *hashFunction;
+	int *bits;
+	size_t bloomSize;
+};
+
 //function declarations
 void QuickSort(int arr[], int StartIndex, int EndIndex);
 int Partition(int arr[], int StartIndex, int EndIndex);
@@ -14,7 +36,10 @@ int BinarySearch(int arr[], int X, int StartIndex, int EndIndex);
 void MergeSort(int arr[], int size);
 void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize);
 int HashFunction(string Input);
-void BloomFilter();
+bloom createBloom(size_t size);
+void addHashFunctionToBloom(bloom bFilter, hash_function function);
+void addToBloom(bloom bFilter, void *element);
+bool isPresent(bloom bFilter, void *element);
 
 //The purpose of this function is to recursively sort
 //a passed in vector of integers using the quick sort method
@@ -197,14 +222,100 @@ void Merge(int arr[], int Left[], int LeftSize, int Right[], int RightSize)
 
 //The purpose of this function is to use a custom hashing function to convert
 //a passed in string into a hash
+// After much trial and error with good prime numbers for collisions and hashing, I was using 57 and 93 as my values. I then did a google search for the
+// "best" prime number for hashing. This in turn led me to the left-shift method which appeared to be much faster and efficient.
 int HashFunction(string Input)
 {
-	int Hash = 0;
+
+	// Initiate the hash to a number I chose randomly and initiate the intVal integer.
+	unsigned long Hash(8173);
+	int intVal;
+
+	// Interates through the string and creates a hash. The value of the current character of the string is stored in intVal.
+	// The Hash is then left-shifted 5 bits, added to the previous Hash, and then intVal is added to it. The left-shift of 5 bits was
+	// recommended by the djb2 hashing functions, which can be found at http://www.cse.yorku.ca/~oz/hash.html
+	for (int i = 0; i < Input.length(); i++) {
+		intVal = Input[i];
+		Hash = (Hash << 5) + Hash + intVal;
+	}
+
+
 	return Hash; //return the hashed string
+
+}
+
+// This function is responsible for the creation of a Bloom Filter.
+bloom createBloom(size_t size) {
+
+	bloom theBloom;						// Initialize a Bloom Filter
+	theBloom->bloomSize = size;			// Set the size of the bloom filter
+	theBloom->bits = new int[size];		// Allocate memory for the bits
+
+	return theBloom;					// Return the Bloom Filter
+
+}
+
+// This function is responsible for adding a hash function to a Bloom Filter's
+// list of functions to iterate through in the isPresent function.
+void addHashFunctionToBloom(bloom bFilter, hash_function function) {
+
+	struct bloomFilterFunction *last = bFilter->hashFunction;		// Initializes a Bloom Filter Function for a tail
+
+	struct bloomFilterFunction *list = new bloomFilterFunction;		// Initializes a Bloom Filter Function and its head
+	list->hashFunction = function;
+
+	while (last && last->next) {									// Interates through the list to the last function
+		last = last->next;
+	}
+	if (last) {														// Add the provided function to the list
+		last->next = list;
+	}
+	else {															// If a list hasn't been created yet, then this function is the first function
+		bFilter->hashFunction = list;
+	}
+
+	return;
+
+}
+
+// This function is responsible for add an element to a Bloom Filter.
+void addToBloom(bloom bFilter, void *element) {
+
+	struct bloomFilterFunction *list = bFilter->hashFunction;		// Initializes a Bloom Filter Function list
+
+	int *bits = bFilter->bits;										// Stores the Bloom Filter's bits in a pointer
+
+
+																	// Iterates through the list of hashes that has been provided and calculates each hash for the
+																	// supplied element.
+	while (list) {
+		unsigned int hash = list->hashFunction(element);			// Computes the hash of the function
+		hash %= bFilter->bloomSize * 8;								// A hash to be used for verification
+		bits[hash / 8] |= 1 << hash % 8;							// Calculates the Bloom Filter's nth bit. The hash is n
+		list = list->next;											// Iterates to the next item
+	}
+
+	return;
+
 }
 
 
-void BloomFilter()
-{
-	return; //terminate the function
+bool isPresent(bloom bFilter, void *element) {
+
+	struct bloomFilterFunction *list = bFilter->hashFunction;		// Initializes a Bloom Filter Function list
+
+	int *bits = bFilter->bits;										// Stores the Bloom Filter's bits in a pointer
+
+	while (list) {
+		unsigned int hash = list->hashFunction(element);			// Computes the hash of the function
+		hash %= bFilter->bloomSize * 8;								// A hash to be used for verification
+
+		if (!(bits[hash / 8] & 1 << hash % 8)) {					// Checks the nth bit and returns false if it is 0
+			return false;
+		}
+		list = list->next;											// Iterates to the next item
+	}
+
+	return true;													// Returns true otherwise as the element is *most likely* in the Bloom Filter
+
 }
