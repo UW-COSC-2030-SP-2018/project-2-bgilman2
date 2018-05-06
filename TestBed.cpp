@@ -12,7 +12,10 @@
 #include<iostream>
 #include"Functions.h"
 #include<algorithm> //STL sort to check sort functions
+#include<fstream> // For testing hash function
 #include"RandomUtilities.h" //for generating random numbers
+#include "HashTables.h" // For testing hash function
+#include "GeneralHashFunctions.h" // For testing hash function
 
 //from iostream
 using std::cout;
@@ -26,6 +29,9 @@ using std::sort;
 using std::rand;
 using std::srand;
 
+//from fstream
+using std::ifstream;
+
 //function for printing arrays
 void PrintArray(int arr[], string ArrayName, int ArraySize);
 //function for testing if the custom sort function was successful
@@ -36,6 +42,11 @@ void CheckSearch(int arr[], int arrSize);
 void FillArray(int arr[], int arrSize);
 //function for rigerously testing sorts 
 void RigerousSortTest(string TestType, int TestTimes);
+// Function from main.cpp from Lab 10. Used to test the hash function
+void hashFunctionTest();
+// Function to test Bloom Filter Functionality
+void bloomFilterTest();
+
 
 int main()
 {
@@ -43,11 +54,11 @@ int main()
 
 	int QuickSortArr[12]; //array for testing quicksort function
 	int QuickSortSize = 12; //size of the array
-	//Fill the array with random numbers
+							//Fill the array with random numbers
 	FillArray(QuickSortArr, QuickSortSize);
 	QuickSort(QuickSortArr, 0, QuickSortSize - 1); //sort the array using the custom quick sort
 
-	//Full rigerous test
+												   //Full rigerous test
 	RigerousSortTest("Quick", 1000);
 	/////////////////////////////////////////////////////
 
@@ -59,6 +70,24 @@ int main()
 	///////////////// TESTING MERGERSORT /////////////////
 	RigerousSortTest("Merge", 1000);
 	/////////////////////////////////////////////////////
+
+	///////////////// TESTING HASH FUNCTION /////////////////
+	cout << "Do you want to test the hash function? (y/n)\n";
+	string verify;
+	cin >> verify;
+	if (verify == "y") {
+		hashFunctionTest();
+	}
+	/////////////////////////////////////////////////////
+
+	///////////////// TESTING BLOOM FILTER /////////////////
+	cout << "Do you want to test the hash function? (y/n)\nBeware! This will currently break the program.\n";
+	cin >> verify;
+	if (verify == "y") {
+		bloomFilterTest();
+	}
+	/////////////////////////////////////////////////////
+
 
 	//allow the user to see the data
 	int temp = 0;
@@ -83,7 +112,7 @@ void PrintArray(int arr[], string ArrayName, int ArraySize)
 bool CheckSort(int arrCustom[], int arrCustomSize)
 {
 	int *STLSort = new int[arrCustomSize]; //array to test the quick sort against
-	//copy the contents of the passed in array to the new array
+										   //copy the contents of the passed in array to the new array
 	for (int i = 0; i < arrCustomSize; i++)
 		STLSort[i] = arrCustom[i];
 
@@ -92,7 +121,7 @@ bool CheckSort(int arrCustom[], int arrCustomSize)
 	sort(STLSort, STLSort + arrCustomSize);
 	//if the arrays are the same size
 
-		//iterate throught the arrays and check if they are equal to each other
+	//iterate throught the arrays and check if they are equal to each other
 	for (int i = 0; i < arrCustomSize - 1; i++)
 	{
 		//if one element is not the same
@@ -104,7 +133,7 @@ bool CheckSort(int arrCustom[], int arrCustomSize)
 	}
 
 	delete[] STLSort; //delete the array
-	//cout << "Passed" << endl;
+					  //cout << "Passed" << endl;
 	return 1; //if program gets here, the two arrays were the same
 }
 
@@ -118,14 +147,14 @@ void CheckSearch(int arr[], int arrSize)
 	int *Numbers = new int[Size]; //numbers to search for
 	FillArray(Numbers, Size); //fill the array with random numbers
 
-	//for each of the numbers that need to be searched for
+							  //for each of the numbers that need to be searched for
 	for (int i = 0; i < Size; i++)
 	{
 		int X = Numbers[i]; //number that is being searched for
 		FuncResult = BinarySearch(arr, X, 0, arrSize - 1);
 		ForIndex = -1; //reset the search index
 
-		//search for the number in the array using a for loop
+					   //search for the number in the array using a for loop
 		for (int j = 0; j < arrSize; j++)
 		{
 			//if the number is found
@@ -139,7 +168,7 @@ void CheckSearch(int arr[], int arrSize)
 		if (ForIndex != FuncResult)
 		{
 			delete[] Numbers; //delete the array that was used
-			//notify the user that it failed
+							  //notify the user that it failed
 			cout << "Binary Search Failed" << endl;
 			return; //end the function
 		}
@@ -166,16 +195,16 @@ void RigerousSortTest(string TestType, int TestTimes)
 	int ArrSize = rand() % 80 + 1; //get the size of the array (from 1 to 80)
 	int *Arr = new int[ArrSize]; //create the array with the generated size
 
-	//test the sort functions
+								 //test the sort functions
 	for (int i = 0; i < TestTimes; i++)
 	{
 		FillArray(Arr, ArrSize); //fill the array with random numbers
 		bool Results = 0; //variable for storing the results
 
-		//if the user wants a merge sort, use the merge sort
+						  //if the user wants a merge sort, use the merge sort
 		if (TestType == "Merge")
 			MergeSort(Arr, ArrSize); //sort the array
-		//if the user wants a quick sort, use the quick sort
+									 //if the user wants a quick sort, use the quick sort
 		else if (TestType == "Quick")
 			QuickSort(Arr, 0, ArrSize - 1); //Sort the array
 		else
@@ -185,17 +214,92 @@ void RigerousSortTest(string TestType, int TestTimes)
 		}
 
 		Results = CheckSort(Arr, ArrSize); //check the sort
-		//if the sort failed, terminate the function early and notify user
+										   //if the sort failed, terminate the function early and notify user
 		if (Results == false)
 		{
 			delete[] Arr; //delete the array that was used
-			//notify the user that the test failed
+						  //notify the user that the test failed
 			cout << TestType << " Sort Failed Rigerous Test" << endl;
 			return; //terminate the function
 		}
 	}
 	delete[] Arr; //delete the array that was used
-	//notify the user that the test passed
+				  //notify the user that the test passed
 	cout << TestType << " Sort Passed Rigerous Test" << endl;
 	return; //terminate the function
+}
+
+
+void hashFunctionTest() {
+	ifstream namesIn("names.txt"),
+		wordsIn("randoWords.txt");
+	string name;
+	char word[255];
+
+	HashTables nameTableHOP;
+	HashTables nameTableWHOP;
+	HashTables nameTableRSHOP;
+	HashTables nameTableJSHOP;
+	HashTables nameTableOH;
+
+	HashTables wordTableHOP;
+	HashTables wordTableWHOP;
+	HashTables wordTableRSHOP;
+	HashTables wordTableJSHOP;
+	HashTables wordTableOH;
+
+	while (namesIn >> name) {
+
+		size_t HOP = std::hash<string>{}(name);
+		size_t WHOP = WeakHash(name);
+		size_t RSHOP = RSHash(name);
+		size_t JSHOP = JSHash(name);
+		size_t OH = OurHash(name);
+
+		nameTableHOP.addToTables(HOP, name);
+		nameTableWHOP.addToTables(WHOP, name);
+		nameTableRSHOP.addToTables(RSHOP, name);
+		nameTableJSHOP.addToTables(JSHOP, name);
+		nameTableOH.addToTables(OH, name);
+	}
+
+	while (wordsIn.getline(word, 255)) {
+
+		size_t HOP = std::hash<string>{}(word);
+		size_t WHOP = WeakHash(word);
+		size_t RSHOP = RSHash(word);
+		size_t JSHOP = JSHash(word);
+		size_t OH = OurHash(word);
+
+		wordTableHOP.addToTables(HOP, word);
+		wordTableWHOP.addToTables(WHOP, word);
+		wordTableRSHOP.addToTables(RSHOP, word);
+		wordTableJSHOP.addToTables(JSHOP, word);
+		wordTableOH.addToTables(OH, name);
+	}
+
+	nameTableHOP.CollisionReport();
+	nameTableWHOP.CollisionReport();
+	nameTableRSHOP.CollisionReport();
+	nameTableJSHOP.CollisionReport();
+	nameTableOH.CollisionReport();
+
+	wordTableHOP.CollisionReport();
+	wordTableWHOP.CollisionReport();
+	wordTableRSHOP.CollisionReport();
+	wordTableJSHOP.CollisionReport();
+	wordTableOH.CollisionReport();
+
+	return;
+}
+
+
+void bloomFilterTest() {
+	bloomFilter bloom = createBloom(10);
+	addHashFunctionToBloom(bloom, OurHash);
+	addHashFunctionToBloom(bloom, RSHash);
+	cout << ("This should be zero:\n", isPresent(bloom, "COSC Test"));
+	addToBloom(bloom, "COSC Test");
+	cout << ("This should be one:\n", isPresent(bloom, "COSC Test"));
+	cout << ("This should (most likely) be zero:\n", isPresent(bloom, "Test COSC"));
 }
