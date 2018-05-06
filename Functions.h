@@ -241,6 +241,7 @@ struct bloomFilter {
 	int *bits;
 	size_t bloomSize;
 
+	// Constructor for the Bloom Filter. Initializes variaables to 0
 	bloomFilter() {
 		struct bloomFilterFunction *list = new bloomFilterFunction;
 		bloomSize = 0;			// Set the size of the bloom filter
@@ -252,11 +253,11 @@ struct bloomFilter {
 // This function is responsible for the creation of a Bloom Filter.
 bloomFilter createBloom(size_t size) {
 
-	bloomFilter *theBloom = new bloomFilter();						// Initialize a Bloom Filter
-	theBloom->bloomSize = size;			// Set the size of the bloom filter
-	theBloom->bits = new int[size];		// Allocate memory for the bits
+	bloomFilter *theBloom = new bloomFilter();		// Initialize a Bloom Filter
+	theBloom->bloomSize = size;						// Set the size of the bloom filter
+	theBloom->bits = new int[size];					// Allocate memory for the bits
 
-	return *theBloom;					// Return the Bloom Filter
+	return *theBloom;								// Return the Bloom Filter
 
 }
 
