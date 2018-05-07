@@ -2,6 +2,8 @@
 // 4/22/2018
 // Functions.h
 
+// TEST FUNCTION FILE DO NOT USE FOR TEST BED USE FUNCTIONS.H
+
 #include<string>
 
 //from string
